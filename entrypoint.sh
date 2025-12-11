@@ -23,8 +23,12 @@ gunicorn backend.app:app \
   --bind 127.0.0.1:${INTERNAL_PORT} \
   --workers 1 \
   --timeout 300 \
+  --log-level debug \
   --access-logfile - \
   --error-logfile - &
+
+sleep 2
+ps aux | grep gunicorn
 
 # Small delay to let Gunicorn process spawn (optional)
 sleep 0.5
