@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WAVE AI — Admin Dashboard</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin_dashboard.css') }}" />
+</head>
+<body>
+  <!-- Live background canvas + animated gradient overlay -->
+  <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
+  <div class="bg-gradient" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">WAVE AI — Admin</div>
+  </header>
+
+  <main class="container">
+    <h1 class="title">Overview</h1>
+
+    <!-- 4 x 4 grid: two rows of 4 -->
+    <section class="cards cards-4x4">
+      <article class="card">
+        <h4 class="card-title">Total Users</h4>
+        <div class="card-value" id="total_users">{{ total_users }}</div>
+      </article>
+
+      <article class="card">
+        <h4 class="card-title">Total Ideas</h4>
+        <div class="card-value" id="total_ideas">{{ total_ideas }}</div>
+      </article>
+
+      <article class="card">
+        <h4 class="card-title">Sites Generated</h4>
+        <div class="card-value" id="sites_generated">{{ sites_generated }}</div>
+      </article>
+
+      <article class="card">
+        <h4 class="card-title">API Failures</h4>
+        <div class="card-value" id="api_failures">{{ api_failures }}</div>
+      </article>
+
+      <article class="card">
+        <h4 class="card-title">Total Chats</h4>
+        <div class="card-value" id="total_chats">{{ total_chats }}</div>
+      </article>
+
+      <article class="card">
+        <h4 class="card-title">Avg Chat Duration (ms)</h4>
+        <div class="card-value" id="avg_chat_duration_ms">{{ avg_chat_duration_ms }}</div>
+      </article>
+
+      <article class="card">
+        <h4 class="card-title">Total Mutations</h4>
+        <div class="card-value" id="total_mutations">{{ total_mutations }}</div>
+      </article>
+
+      <article class="card">
+        <h4 class="card-title">Total API Calls</h4>
+        <div class="card-value" id="total_api_calls">{{ total_api_calls }}</div>
+      </article>
+    </section>
+
+    <div class="actions">
+      <a class="btn" href="/admin/ideas">View recent ideas</a>
+      <a class="btn btn-ghost" href="/admin/metrics/summary">JSON summary</a>
+      <button class="btn btn-outline" id="refreshBtn">Refresh Now</button>
+    </div>
+
+    <footer class="footer">
+      <small>WAVE AI • Admin panel</small>
+    </footer>
+  </main>
+
+  <!-- Live background particle script + metrics updater -->
+  <script>
+  // ====== Background particles (lightweight) ======
+  (function () {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
+    const particles = [];
+    const PARTICLE_COUNT = Math.floor((w * h) / 90000) + 25; // scale by screen
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = rand(0, w);
+        this.y = rand(0, h);
+        this.vx = rand(-0.15, 0.15);
+        this.vy = rand(-0.05, 0.05);
+        this.size = rand(0.8, 3.2);
+        this.alpha = rand(0.05, 0.5);
+        this.phase = rand(0, Math.PI * 2);
+      }
+      update() {
+        this.x += this.vx + Math.sin(this.phase) * 0.12;
+        this.y += this.vy + Math.cos(this.phase * 0.7) * 0.08;
+        this.phase += 0.005;
+        if (this.x < -10 || this.x > w + 10 || this.y < -10 || this.y > h + 10) {
+          // respawn on opposite edge
+          if (Math.random() > 0.5) {
+            this.x = rand(0, w);
+            this.y = (Math.random() > 0.5) ? -10 : h + 10;
+          } else {
+            this.x = (Math.random() > 0.5) ? -10 : w + 10;
+            this.y = rand(0, h);
+          }
+        }
+      }
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(110,231,183,${this.alpha})`; // subtle greenish
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+    }
+
+    function onResize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      initParticles();
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, w, h);
+      // subtle blur/glow by drawing translucent rectangle
+      // ctx.fillStyle = 'rgba(6,10,23,0.14)'; ctx.fillRect(0,0,w,h);
+
+      for (let p of particles) {
+        p.update();
+        p.draw(ctx);
+      }
+      requestAnimationFrame(render);
+    }
+
+    window.addEventListener('resize', onResize);
+    initParticles();
+    render();
+  })();
+
+  // ====== Metrics polling and UI update ======
+  (function () {
+    const ENDPOINT = '/admin/metrics/summary';
+    const POLL_MS = 10000; // 10s
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function fmt(v, dec=0) {
+      if (v === null || v === undefined) return '0';
+      const n = Number(v);
+      if (Number.isNaN(n)) return v;
+      return dec ? n.toFixed(dec) : Math.round(n).toLocaleString();
+    }
+
+    async function fetchMetrics() {
+      try {
+        const res = await fetch(ENDPOINT, { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        setText('total_users', fmt(data.total_users));
+        setText('total_ideas', fmt(data.total_ideas));
+        setText('sites_generated', fmt(data.sites_generated));
+        setText('api_failures', fmt(data.api_failures));
+        setText('total_chats', fmt(data.total_chats));
+        setText('avg_chat_duration_ms', fmt(data.avg_chat_duration_ms));
+        setText('total_mutations', fmt(data.total_mutations));
+        setText('total_api_calls', fmt(data.total_api_calls));
+      } catch (err) {
+        console.error('Failed to fetch metrics:', err);
+      }
+    }
+
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) refreshBtn.addEventListener('click', fetchMetrics);
+
+    fetchMetrics();
+    setInterval(fetchMetrics, POLL_MS);
+  })();
+  </script>
+</body>
+</html>

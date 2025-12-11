@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutation Dashboard - WAVE AI</title>
+    <link rel="icon" type="image/png" href="wave_logo.png">
+    <link rel="stylesheet" href="sidebar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 60px;
+            padding: 40px 32px;
+            transition: margin-left 0.3s ease;
+            max-width: 1400px;
+            margin-right: auto;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #cccccc;
+            font-weight: 400;
+        }
+
+        .back-btn {
+            color: #009DFF;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(0, 157, 255, 0.5);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .validated-idea-card,
+        .mutated-idea-card {
+            background-color: #1E1E1E;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .validated-idea-card:hover,
+        .mutated-idea-card:hover {
+            border-color: #009DFF;
+            box-shadow: 0 0 20px rgba(0, 157, 255, 0.1);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .idea-content {
+            margin-bottom: 20px;
+        }
+
+        .placeholder-text,
+        .mutated-text {
+            color: #cccccc;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .mutation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .mutation-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #009DFF;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 8px rgba(0, 157, 255, 0.6);
+        }
+
+        .mutation-status {
+            font-size: 0.85rem;
+            color: #009DFF;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .mutated-content {
+            margin-bottom: 24px;
+            min-height: 120px;
+            position: relative;
+        }
+
+        .loading-shimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .shimmer-line {
+            height: 16px;
+            background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .shimmer-line.short {
+            width: 60%;
+        }
+
+        .mutation-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            background-color: #3a3a3a;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background-color: #4a4a4a;
+            transform: translateY(-2px);
+            border-color: #009DFF;
+            box-shadow: 0 0 15px rgba(0, 157, 255, 0.4);
+        }
+
+        .build-btn:hover {
+            background-color: #22c55e;
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .rethink-btn:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .explain-btn:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #1E1E1E;
+            border-radius: 16px;
+            padding: 0;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #009DFF;
+            background-color: #2a2a2a;
+        }
+
+        .modal-body {
+            padding: 32px;
+            overflow-y: auto;
+            max-height: calc(80vh - 100px);
+        }
+
+        .explanation-section {
+            margin-bottom: 32px;
+        }
+
+        .explanation-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #009DFF;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background-color: #009DFF;
+            border-radius: 2px;
+        }
+
+        .trend-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .trend-list li {
+            color: #cccccc;
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .trend-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #009DFF;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .content-grid > * {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .validated-idea-card {
+            animation-delay: 0.1s;
+        }
+
+        .mutated-idea-card {
+            animation-delay: 0.2s;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px 16px;
+            }
+
+            .main-title {
+                font-size: 2.2rem;
+            }
+
+            .validated-idea-card,
+            .mutated-idea-card {
+                padding: 24px;
+            }
+
+            .mutation-actions {
+                justify-content: center;
+            }
+
+            .action-btn {
+                flex: 1;
+                min-width: auto;
+                max-width: 120px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Section -->
+            <div class="header-section">
+                <h1 class="main-title">Mutation Dashboard</h1>
+                <p class="subtitle">Transform your idea with market and social intelligence</p>
+                <div style="margin-top:12px">
+                  <button class="action-btn" onclick="if(history.length>1){history.back()}else{location.href='main.html'}">Go back</button>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Validated Idea Card -->
+                <div class="validated-idea-card">
+                    <h3 class="card-title">Original Idea</h3>
+                    <div class="idea-content" id="validated-idea-content">
+                        <p class="placeholder-text">The original idea description will appear here...</p>
+                    </div>
+                </div>
+
+                <!-- Mutated Idea Card -->
+                <div class="mutated-idea-card">
+                    <div class="mutation-header">
+                        <h3 class="card-title">Market- & Social-Driven Mutation</h3>
+                        <div class="mutation-indicator">
+                            <div class="pulse-dot"></div>
+                            <span class="mutation-status">AI Enhanced</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mutated-content" id="mutated-content">
+                        <div class="loading-shimmer" id="loading-shimmer" style="display: none;">
+                            <div class="shimmer-line"></div>
+                            <div class="shimmer-line"></div>
+                            <div class="shimmer-line short"></div>
+                        </div>
+                        <p class="mutated-text" id="mutated-text">
+                            Generating enhanced version of your idea...
+                        </p>
+                    </div>
+
+                    <div class="mutation-actions">
+                        <button class="action-btn build-btn" onclick="window.location.href='build.html'">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 3v18h18"></path>
+                                <path d="m19 9-5 5-4-4-3 3"></path>
+                            </svg>
+                            Build
+                        </button>
+                        <button class="action-btn rethink-btn" id="rethink-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                                <path d="M21 3v5h-5"></path>
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                                <path d="M8 16H3v5"></path>
+                            </svg>
+                            Rethink
+                        </button>
+                        <button class="action-btn explain-btn" id="explain-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            Explain
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explanation Modal -->
+    <div id="explanation-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mutation Explanation</h3>
+                <button class="modal-close" id="modal-close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body" id="explanation-content">
+                <div style="text-align: center; padding: 20px;">
+                    <div class="spinner" style="border: 3px solid #2a2a2a; border-top: 3px solid #009DFF; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div>
+                    <p style="color: #cccccc;">Generating explanation...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+    <script>
+        // Load sidebar component
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('sidebar.html');
+                const sidebarHTML = await response.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHTML;
+            } catch (error) {
+                console.error('Failed to load sidebar:', error);
+            }
+
+            // Initialize mutation page
+            initMutationPage();
+        });
+
+        function initMutationPage() {
+            loadValidatedIdea();
+            // Call async function properly
+            generateInitialMutation().catch(err => {
+                console.error('Error initializing mutation:', err);
+                const fallback = 'Enhanced AI-powered version with machine learning capabilities, real-time analytics, and predictive insights.';
+                updateMutatedContent(fallback);
+            });
+            setupEventListeners();
+            setupBackButton();
+        }
+
+        function loadValidatedIdea() {
+            const ideaText = localStorage.getItem('ideaText');
+            const validatedIdeaContent = document.getElementById('validated-idea-content');
+            
+            if (ideaText && validatedIdeaContent) {
+                validatedIdeaContent.innerHTML = `<p class="placeholder-text">${ideaText}</p>`;
+            }
+        }
+
+        async function generateInitialMutation() {
+            const mutatedTextElement = document.getElementById('mutated-text');
+            const loadingShimmer = document.getElementById('loading-shimmer');
+            
+            // Show loading state immediately
+            if (mutatedTextElement && loadingShimmer) {
+                loadingShimmer.style.display = 'block';
+                mutatedTextElement.style.opacity = '0';
+                mutatedTextElement.textContent = 'Generating enhanced version of your idea...';
+            }
+            
+            const originalIdea = localStorage.getItem('ideaText') || 'default idea';
+            try {
+                const mutatedIdea = await mutateIdea(originalIdea);
+                updateMutatedContent(mutatedIdea);
+            } catch (error) {
+                console.error('Error generating mutation:', error);
+                // Fallback
+                const fallback = `Enhanced AI-powered version: ${originalIdea} with machine learning capabilities, real-time analytics, and predictive insights.`;
+                updateMutatedContent(fallback);
+            }
+        }
+
+        async function mutateIdea(originalIdea) {
+            try {
+                // Call the backend API for AI-enhanced idea
+                const response = await fetch('http://localhost:5000/api/ai-enhanced', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ idea: originalIdea })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.enhanced_idea) {
+                        return data.enhanced_idea;
+                    } else {
+                        throw new Error('Invalid response format');
+                    }
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'API request failed');
+                }
+            } catch (error) {
+                console.error('Error calling AI enhancement API:', error);
+                // Fallback to static mutations
+                const mutations = [
+                    `Enhanced AI-powered version: ${originalIdea || 'A revolutionary platform'} with machine learning capabilities, real-time analytics, and predictive insights that adapt to user behavior and market trends. Features include automated workflow optimization, intelligent recommendations, and seamless integration with existing enterprise systems.`,
+                    
+                    `Market-optimized evolution: ${originalIdea || 'An innovative solution'} redesigned for the modern digital economy with subscription-based monetization, cloud-native architecture, and mobile-first approach. Incorporates social collaboration features, sustainability metrics, and compliance with emerging data privacy regulations.`,
+                    
+                    `Trend-aligned transformation: ${originalIdea || 'A cutting-edge concept'} enhanced with community-driven features, personalization algorithms, and cross-platform compatibility. Includes gamification elements, social sharing capabilities, and integration with popular productivity tools to maximize user engagement and retention.`
+                ];
+                return mutations[Math.floor(Math.random() * mutations.length)];
+            }
+        }
+
+        function updateMutatedContent(newText) {
+            const mutatedTextElement = document.getElementById('mutated-text');
+            const loadingShimmer = document.getElementById('loading-shimmer');
+            
+            if (mutatedTextElement && loadingShimmer) {
+                // Show loading shimmer
+                loadingShimmer.style.display = 'block';
+                mutatedTextElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    // Hide shimmer and show new text
+                    loadingShimmer.style.display = 'none';
+                    mutatedTextElement.textContent = newText;
+                    mutatedTextElement.style.opacity = '1';
+                    mutatedTextElement.style.animation = 'fadeInUp 0.5s ease';
+                    
+                    // Save mutated idea
+                    localStorage.setItem('mutatedIdea', newText);
+                }, 1500);
+            }
+        }
+
+        function setupEventListeners() {
+            const rethinkBtn = document.getElementById('rethink-btn');
+            const explainBtn = document.getElementById('explain-btn');
+            const modalClose = document.getElementById('modal-close');
+            const modal = document.getElementById('explanation-modal');
+
+            if (rethinkBtn) {
+                rethinkBtn.addEventListener('click', handleRethink);
+            }
+
+            if (explainBtn) {
+                explainBtn.addEventListener('click', showExplanation);
+            }
+
+            if (modalClose) {
+                modalClose.addEventListener('click', hideExplanation);
+            }
+
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        hideExplanation();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    hideExplanation();
+                }
+            });
+        }
+
+        function setupBackButton() {
+            const backBtn = document.getElementById('back-btn');
+            const referrer = document.referrer;
+            
+            if (backBtn) {
+                if (referrer.includes('validation.html')) {
+                    backBtn.href = 'validation.html';
+                    backBtn.textContent = '← Back to Validation';
+                } else if (referrer.includes('resurrect.html')) {
+                    backBtn.href = 'resurrect.html';
+                    backBtn.textContent = '← Back to Resurrect';
+                } else {
+                    backBtn.href = 'index.html';
+                    backBtn.textContent = '← Back to Home';
+                }
+            }
+        }
+
+        async function handleRethink() {
+            const rethinkBtn = document.getElementById('rethink-btn');
+            if (rethinkBtn) {
+                rethinkBtn.style.opacity = '0.6';
+                rethinkBtn.style.pointerEvents = 'none';
+                
+                try {
+                    const originalIdea = localStorage.getItem('ideaText') || 'default idea';
+                    
+                    // Call the backend API for rethought idea
+                    const response = await fetch('http://localhost:5000/api/rethink-idea', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ idea: originalIdea, count: 1 })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        // API returns mutations array
+                        if (data.success && data.mutations && data.mutations.length > 0) {
+                            const rethoughtText = data.mutations[0].mutation_text || data.mutations[0].rethought_idea;
+                            if (rethoughtText) {
+                                updateMutatedContent(rethoughtText);
+                            } else {
+                                throw new Error('Invalid response format');
+                            }
+                        } else {
+                            throw new Error('No mutations returned');
+                        }
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || 'API request failed');
+                    }
+                } catch (error) {
+                    console.error('Error calling rethink API:', error);
+                    // Fallback to AI enhancement
+                    const originalIdea = localStorage.getItem('ideaText') || 'default idea';
+                    const newMutation = await mutateIdea(originalIdea);
+                    updateMutatedContent(newMutation);
+                }
+                
+                setTimeout(() => {
+                    rethinkBtn.style.opacity = '1';
+                    rethinkBtn.style.pointerEvents = 'auto';
+                }, 1500);
+            }
+        }
+
+        async function showExplanation() {
+            const modal = document.getElementById('explanation-modal');
+            const explanationContent = document.getElementById('explanation-content');
+            
+            if (modal && explanationContent) {
+                // Show loading state
+                explanationContent.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="spinner" style="border: 3px solid #2a2a2a; border-top: 3px solid #009DFF; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div><p style="color: #cccccc;">Generating explanation...</p></div>';
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                try {
+                    const originalIdea = localStorage.getItem('ideaText') || 'default idea';
+                    const mutatedIdea = localStorage.getItem('mutatedIdea') || document.getElementById('mutated-text')?.textContent || '';
+                    
+                    // Call the backend API for detailed explanation
+                    const response = await fetch('http://localhost:5000/api/explain-mutation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            original_idea: originalIdea,
+                            mutated_idea: mutatedIdea
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Format the explanation with proper line breaks and styling
+                        const formattedExplanation = data.explanation
+                            .replace(/\n\n/g, '</p><p style="margin: 16px 0; color: #cccccc; line-height: 1.6;">')
+                            .replace(/\n/g, '<br>')
+                            .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #009DFF;">$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em style="color: #9ca3af;">$1</em>');
+                        explanationContent.innerHTML = `<div style="color: #cccccc; line-height: 1.6;"><p style="margin: 16px 0;">${formattedExplanation}</p></div>`;
+                    } else {
+                        throw new Error('API request failed');
+                    }
+                } catch (error) {
+                    console.error('Error calling explain API:', error);
+                    const originalIdea = localStorage.getItem('ideaText') || 'default idea';
+                    explanationContent.innerHTML = `
+                        <div style="color: #cccccc; line-height: 1.6;">
+                            <h3 style="color: #009DFF; margin-bottom: 16px;">Idea Explanation</h3>
+                            <p style="margin: 16px 0;">Here's a simple explanation of your business idea:</p>
+                            <p style="margin: 16px 0;"><strong style="color: #009DFF;">What it is:</strong> ${originalIdea} is a business concept that aims to solve a specific problem or meet a need in the market.</p>
+                            <p style="margin: 16px 0;"><strong style="color: #009DFF;">Who it's for:</strong> This idea targets people who need solutions in this area. They would benefit from the unique approach.</p>
+                            <p style="margin: 16px 0;"><strong style="color: #009DFF;">How it works:</strong> The business would operate by providing value through innovative solutions and services.</p>
+                            <p style="margin: 16px 0;"><strong style="color: #009DFF;">Why it could succeed:</strong> This idea has potential because it addresses real market needs. With the right execution, it could achieve significant success.</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function hideExplanation() {
+            const modal = document.getElementById('explanation-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+</body>
+</html>

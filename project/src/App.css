@@ -1,0 +1,296 @@
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+/* Custom Scrollbar for Support Bot */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #009DFF 0%, #0891b2 100%);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #0891b2 0%, #009DFF 100%);
+}
+
+/* Slide Animation for Background Pattern */
+@keyframes slide {
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(20px) translateY(20px); }
+}
+
+/* Futuristic Background Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes drift {
+  0% { transform: translateX(-100px) translateY(-100px); }
+  100% { transform: translateX(100vw) translateY(100vh); }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+    filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.6), 0 0 60px rgba(6, 182, 212, 0.4);
+    filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.8));
+  }
+}
+
+/* Logo float animation */
+@keyframes logoFloat {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% { 
+    transform: translateY(-15px) rotate(5deg);
+  }
+}
+
+/* Logo glow animation */
+@keyframes logoGlow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+  }
+  50% { 
+    filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.8)) drop-shadow(0 0 40px rgba(0, 212, 255, 0.4));
+  }
+}
+
+.animate-float {
+  animation: logoFloat 3s ease-in-out infinite, logoGlow 2s ease-in-out infinite alternate;
+}
+
+.futuristic-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.futuristic-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(147, 51, 234, 0.1) 0%, transparent 50%);
+  animation: pulse 8s ease-in-out infinite;
+  z-index: -1;
+}
+
+.floating-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.floating-shape {
+  position: absolute;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-shape:nth-child(1) {
+  width: 60px;
+  height: 60px;
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 8s;
+}
+
+.floating-shape:nth-child(2) {
+  width: 40px;
+  height: 40px;
+  top: 60%;
+  left: 80%;
+  animation-delay: 2s;
+  animation-duration: 6s;
+}
+
+.floating-shape:nth-child(3) {
+  width: 80px;
+  height: 80px;
+  top: 80%;
+  left: 20%;
+  animation-delay: 4s;
+  animation-duration: 10s;
+}
+
+.floating-shape:nth-child(4) {
+  width: 30px;
+  height: 30px;
+  top: 30%;
+  left: 70%;
+  animation-delay: 1s;
+  animation-duration: 7s;
+}
+
+.floating-shape:nth-child(5) {
+  width: 50px;
+  height: 50px;
+  top: 70%;
+  left: 60%;
+  animation-delay: 3s;
+  animation-duration: 9s;
+}
+
+.drifting-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(6, 182, 212, 0.6);
+  border-radius: 50%;
+  animation: drift 20s linear infinite;
+}
+
+.particle:nth-child(1) { animation-delay: 0s; top: 10%; }
+.particle:nth-child(2) { animation-delay: 4s; top: 20%; }
+.particle:nth-child(3) { animation-delay: 8s; top: 30%; }
+.particle:nth-child(4) { animation-delay: 12s; top: 40%; }
+.particle:nth-child(5) { animation-delay: 16s; top: 50%; }
+.particle:nth-child(6) { animation-delay: 2s; top: 60%; }
+.particle:nth-child(7) { animation-delay: 6s; top: 70%; }
+.particle:nth-child(8) { animation-delay: 10s; top: 80%; }
+.particle:nth-child(9) { animation-delay: 14s; top: 90%; }
+.particle:nth-child(10) { animation-delay: 18s; top: 15%; }
+
+/* Font Family Definitions */
+.font-necosmic {
+  font-family: 'Share Tech Mono', 'Space Mono', 'Orbitron', monospace;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.font-hk-modular {
+  font-family: 'JetBrains Mono', 'HK Modular', monospace;
+}
+
+.font-courier {
+  font-family: 'Courier New', monospace;
+}
+
+/* Neon glow effect for AI text */
+.neon-glow {
+  text-shadow: 
+    0 0 5px #06B6D4,
+    0 0 10px #06B6D4,
+    0 0 20px #06B6D4,
+    0 0 40px #06B6D4;
+}
+
+/* Cyan glow shadows */
+.shadow-cyan {
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+.shadow-cyan-glow {
+  box-shadow: 
+    0 0 10px rgba(6, 182, 212, 0.4),
+    0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+.shadow-cyan-glow-intense {
+  box-shadow: 
+    0 0 15px rgba(6, 182, 212, 0.6),
+    0 0 30px rgba(6, 182, 212, 0.3),
+    0 0 45px rgba(6, 182, 212, 0.1);
+}
+
+/* Input glow effect */
+.shadow-input-glow {
+  box-shadow: 
+    0 0 0 1px rgba(6, 182, 212, 0.5),
+    0 0 20px rgba(6, 182, 212, 0.2),
+    0 0 40px rgba(6, 182, 212, 0.1);
+}
+
+/* Button glow effect */
+.shadow-button-glow {
+  box-shadow: 
+    0 0 15px rgba(6, 182, 212, 0.4),
+    0 0 30px rgba(6, 182, 212, 0.2);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+/* Smooth animations */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus states */
+input:focus {
+  outline: none;
+}
+
+/* Button hover states */
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .neon-glow {
+    text-shadow: 
+      0 0 3px #06B6D4,
+      0 0 6px #06B6D4,
+      0 0 12px #06B6D4,
+      0 0 24px #06B6D4;
+  }
+}

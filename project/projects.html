@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - WAVE AI</title>
+  <link rel="icon" type="image/png" href="/wave_logo.png" />
+  <link rel="stylesheet" href="sidebar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 60px;
+            padding: 40px 32px;
+            transition: margin-left 0.3s ease;
+            max-width: 1400px;
+            margin-right: auto;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-underline {
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, #009DFF, #06b6d4);
+            margin: 0 auto 16px;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0, 157, 255, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #cccccc;
+            font-weight: 400;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .project-card {
+            background-color: #1E1E1E;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            border-color: #009DFF;
+            box-shadow: 0 0 20px rgba(0, 157, 255, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .project-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .project-description {
+            color: #cccccc;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .project-date {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .project-status {
+            padding: 4px 8px;
+            background-color: #22c55e;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+
+        .empty-description {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        .floating-add-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #009DFF, #06b6d4);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 157, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .floating-add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(0, 157, 255, 0.6);
+        }
+
+        .floating-add-btn:active {
+            transform: scale(0.95);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #1E1E1E;
+            border-radius: 16px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #009DFF;
+            background-color: #2a2a2a;
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #2a2a2a;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: #6b7280;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #009DFF;
+            box-shadow: 0 0 0 1px rgba(0, 157, 255, 0.5), 0 0 20px rgba(0, 157, 255, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            background-color: #3a3a3a;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .action-btn:hover {
+            background-color: #4a4a4a;
+            transform: translateY(-2px);
+            border-color: #009DFF;
+            box-shadow: 0 0 15px rgba(0, 157, 255, 0.4);
+        }
+
+        .save-btn:hover {
+            background-color: #22c55e;
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .cancel-btn:hover {
+            background-color: #ef4444;
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+        .project-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px 16px;
+            }
+
+            .main-title {
+                font-size: 2.2rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .project-card {
+                padding: 20px;
+            }
+
+            .floating-add-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 48px;
+                height: 48px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 20px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Section -->
+            <div class="header-section">
+                <h1 class="main-title">PROJECTS</h1>
+                <div class="title-underline"></div>
+                <p class="subtitle">Manage your generated projects and ideas</p>
+                <div style="margin-top:12px">
+                  <button class="action-btn" onclick="if(history.length>1){history.back()}else{location.href='main.html'}">Go back</button>
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="projects-grid" id="projects-grid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Floating Add Button -->
+        <button class="floating-add-btn" id="add-project-btn" title="Add New Project">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div id="add-project-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Project</h3>
+                <button class="modal-close" id="modal-close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="project-form">
+                    <div class="form-group">
+                        <label for="project-title" class="form-label">Project Title</label>
+                        <input type="text" id="project-title" class="form-input" placeholder="Enter project title..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="project-description" class="form-label">Description</label>
+                        <textarea id="project-description" class="form-textarea" placeholder="Describe your project..." rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="action-btn cancel-btn" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="action-btn save-btn">Save Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+    <script>
+        // Load sidebar component
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('sidebar.html');
+                const sidebarHTML = await response.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHTML;
+            } catch (error) {
+                console.error('Failed to load sidebar:', error);
+            }
+
+            // Initialize projects page
+            initProjectsPage();
+        });
+
+        let projects = [];
+
+        function initProjectsPage() {
+            loadProjects();
+            setupEventListeners();
+            renderProjects();
+        }
+
+        function loadProjects() {
+            // Load projects from localStorage (mock Denodo backend)
+            const storedProjects = localStorage.getItem('projects');
+            if (storedProjects) {
+                projects = JSON.parse(storedProjects);
+            } else {
+                // Initialize with sample projects
+                projects = [
+                    {
+                        id: 1,
+                        title: "AI-Powered Task Manager",
+                        description: "Intelligent task management system with predictive scheduling and automated workflow optimization for modern teams.",
+                        date: "2025-01-15",
+                        status: "Active"
+                    },
+                    {
+                        id: 2,
+                        title: "Smart Learning Platform",
+                        description: "Adaptive learning environment that personalizes content delivery based on individual learning patterns and preferences.",
+                        date: "2025-01-14",
+                        status: "Active"
+                    }
+                ];
+                saveProjects();
+            }
+        }
+
+        function saveProjects() {
+            localStorage.setItem('projects', JSON.stringify(projects));
+        }
+
+        function renderProjects() {
+            const projectsGrid = document.getElementById('projects-grid');
+            if (!projectsGrid) return;
+
+            if (projects.length === 0) {
+                projectsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="empty-title">No Projects Yet</h3>
+                        <p class="empty-description">Create your first project to get started</p>
+                    </div>
+                `;
+            } else {
+                projectsGrid.innerHTML = projects.map(project => `
+                    <div class="project-card" data-id="${project.id}">
+                        <div class="project-meta">
+                            <span class="project-date">${formatDate(project.date)}</span>
+                            <span class="project-status">${project.status}</span>
+                        </div>
+                        <h3 class="project-title">${project.title}</h3>
+                        <p class="project-description">${project.description}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+        }
+
+        function setupEventListeners() {
+            // Add Project Button
+            const addProjectBtn = document.getElementById('add-project-btn');
+            if (addProjectBtn) {
+                addProjectBtn.addEventListener('click', openAddModal);
+            }
+
+            // Modal Close
+            const modalClose = document.getElementById('modal-close');
+            const modal = document.getElementById('add-project-modal');
+            const cancelBtn = document.getElementById('cancel-btn');
+
+            if (modalClose) {
+                modalClose.addEventListener('click', closeAddModal);
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', closeAddModal);
+            }
+
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeAddModal();
+                    }
+                });
+            }
+
+            // Form Submit
+            const projectForm = document.getElementById('project-form');
+            if (projectForm) {
+                projectForm.addEventListener('submit', handleFormSubmit);
+            }
+
+            // Escape key to close modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeAddModal();
+                }
+            });
+        }
+
+        function openAddModal() {
+            const modal = document.getElementById('add-project-modal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Focus on title input
+                setTimeout(() => {
+                    const titleInput = document.getElementById('project-title');
+                    if (titleInput) {
+                        titleInput.focus();
+                    }
+                }, 300);
+            }
+        }
+
+        function closeAddModal() {
+            const modal = document.getElementById('add-project-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
+                // Reset form
+                const form = document.getElementById('project-form');
+                if (form) {
+                    form.reset();
+                }
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const titleInput = document.getElementById('project-title');
+            const descriptionInput = document.getElementById('project-description');
+            
+            if (!titleInput || !descriptionInput) return;
+
+            const title = titleInput.value.trim();
+            const description = descriptionInput.value.trim();
+
+            if (!title || !description) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Create new project
+            const newProject = {
+                id: Date.now(),
+                title: title,
+                description: description,
+                date: new Date().toISOString().split('T')[0],
+                status: 'Active'
+            };
+
+            // Mock API call to Denodo backend
+            mockApiCall('/api/projects', 'POST', newProject)
+                .then(() => {
+                    projects.push(newProject);
+                    saveProjects();
+                    renderProjects();
+                    closeAddModal();
+                    
+                    // Show success feedback
+                    showSuccessMessage('Project added successfully!');
+                })
+                .catch(error => {
+                    console.error('Failed to save project:', error);
+                    alert('Failed to save project. Please try again.');
+                });
+        }
+
+        function mockApiCall(endpoint, method, data) {
+            // Simulate API call with delay
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    console.log(`Mock API call: ${method} ${endpoint}`, data);
+                    
+                    // Simulate success (95% of the time)
+                    if (Math.random() > 0.05) {
+                        resolve({ success: true, data });
+                    } else {
+                        reject(new Error('Network error'));
+                    }
+                }, 500 + Math.random() * 1000);
+            });
+        }
+
+        function showSuccessMessage(message) {
+            // Create temporary success notification
+            const notification = document.createElement('div');
+            notification.className = 'success-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #22c55e;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 1002;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+            `;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Method to be called when user saves from Build page
+        function addProjectFromBuild(projectData) {
+            const newProject = {
+                id: Date.now(),
+                title: projectData.title || 'Generated Project',
+                description: projectData.description || 'AI-generated project from Build Dashboard',
+                date: new Date().toISOString().split('T')[0],
+                status: 'Active'
+            };
+
+            projects.push(newProject);
+            saveProjects();
+            renderProjects();
+        }
+
+        // Global function for external access
+        window.addProjectFromBuild = addProjectFromBuild;
+    </script>
+</body>
+</html>

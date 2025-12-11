@@ -1,0 +1,32 @@
+{
+  "name": "wavecodegen-landing-page",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.13.2",
+    "dompurify": "^3.0.4",
+    "marked": "^5.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/dompurify": "^2.3.3",
+    "@types/marked": "^5.0.2",
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}

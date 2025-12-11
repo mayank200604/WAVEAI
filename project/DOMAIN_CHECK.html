@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Check for Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #3a3a3a;
+        }
+        .domain-info {
+            background: #0066cc;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .instructions {
+            background: #ff6b35;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #333;
+            border-radius: 5px;
+        }
+        .firebase-link {
+            display: inline-block;
+            background: #4285f4;
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .firebase-link:hover {
+            background: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 Firebase Domain Authorization Fix</h1>
+        
+        <div class="domain-info">
+            <strong>Current Domain:</strong> <span id="current-domain"></span>
+        </div>
+        
+        <div class="instructions">
+            <h2>⚡ Quick Fix Steps:</h2>
+            <div class="step">
+                <strong>1.</strong> Click the button below to open Firebase Console
+            </div>
+            <div class="step">
+                <strong>2.</strong> Go to: Authentication → Settings → Authorized domains
+            </div>
+            <div class="step">
+                <strong>3.</strong> Click "Add domain" and add: <strong id="domain-to-add"></strong>
+            </div>
+            <div class="step">
+                <strong>4.</strong> Also add these common domains:
+                <ul>
+                    <li><code>localhost</code></li>
+                    <li><code>127.0.0.1</code></li>
+                    <li><code>localhost:5173</code></li>
+                    <li><code>127.0.0.1:5173</code></li>
+                </ul>
+            </div>
+            <div class="step">
+                <strong>5.</strong> Refresh your Wave AI app and try Google sign-in again
+            </div>
+        </div>
+        
+        <a href="https://console.firebase.google.com/project/wave-ad270/authentication/settings" 
+           target="_blank" 
+           class="firebase-link">
+            🚀 Open Firebase Console (Authentication Settings)
+        </a>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #1a4d1a; border-radius: 8px;">
+            <h3>✅ After Adding Domains:</h3>
+            <p>1. Wait 1-2 minutes for changes to propagate</p>
+            <p>2. Go back to your Wave AI app: <a href="http://localhost:5173/login" style="color: #4fc3f7;">http://localhost:5173/login</a></p>
+            <p>3. Try Google sign-in - it should work!</p>
+        </div>
+    </div>
+
+    <script>
+        // Display current domain information
+        const currentDomain = window.location.hostname;
+        const currentPort = window.location.port;
+        const fullDomain = currentPort ? `${currentDomain}:${currentPort}` : currentDomain;
+        
+        document.getElementById('current-domain').textContent = fullDomain;
+        document.getElementById('domain-to-add').textContent = fullDomain;
+        
+        // Auto-copy domain to clipboard
+        navigator.clipboard.writeText(fullDomain).then(() => {
+            console.log('Domain copied to clipboard:', fullDomain);
+        }).catch(err => {
+            console.log('Could not copy domain:', err);
+        });
+    </script>
+</body>
+</html>

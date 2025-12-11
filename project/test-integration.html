@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Wave AI Integration</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #141414;
+            color: white;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #1E1E1E;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #2a2a2a;
+        }
+        h1 {
+            color: #009DFF;
+            font-family: 'Orbitron', monospace;
+        }
+        h2 {
+            color: #009DFF;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        button {
+            background: #009DFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0891b2;
+            box-shadow: 0 0 20px rgba(0, 157, 255, 0.4);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+        }
+        .info {
+            background: rgba(0, 157, 255, 0.2);
+            border: 1px solid #009DFF;
+        }
+        pre {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌊 Wave AI Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Port Detection</h2>
+        <div id="port-info" class="status info">Checking ports...</div>
+        <button onclick="checkPorts()">Refresh Port Check</button>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Prompt Storage</h2>
+        <button onclick="storeTestPrompt()">Store Test Prompt</button>
+        <button onclick="checkStoredPrompt()">Check Stored Prompt</button>
+        <button onclick="clearPrompt()">Clear Prompt</button>
+        <div id="prompt-status" class="status info">Click buttons to test</div>
+        <pre id="prompt-content"></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Open WebGen</h2>
+        <button onclick="openWebGen()">Open WebGen (Auto-detect)</button>
+        <button onclick="openWebGenManual(5176)">Open WebGen (Port 5176)</button>
+        <button onclick="openWebGenManual(5175)">Open WebGen (Port 5175)</button>
+        <button onclick="openWebGenManual(5173)">Open WebGen (Port 5173)</button>
+        <div id="webgen-status" class="status info">Click button to open WebGen</div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Full Integration Test</h2>
+        <button onclick="fullTest()">Run Full Integration Test</button>
+        <div id="full-test-status" class="status info">Click to run full test</div>
+    </div>
+
+    <script>
+        function checkPorts() {
+            const currentPort = window.location.port || '80';
+            const portNum = parseInt(currentPort);
+            
+            const possibleWebGenPorts = [
+                portNum + 2,
+                portNum + 1,
+                5176,
+                5175,
+                5173
+            ];
+            
+            const uniquePorts = [...new Set(possibleWebGenPorts)];
+            
+            const info = `
+Current Wave App Port: ${currentPort}
+Calculated WebGen Ports (in order):
+${uniquePorts.map((p, i) => `  ${i + 1}. http://localhost:${p}`).join('\n')}
+            `;
+            
+            document.getElementById('port-info').innerHTML = `<pre>${info}</pre>`;
+            document.getElementById('port-info').className = 'status success';
+        }
+
+        function storeTestPrompt() {
+            const testPrompt = `Create a professional, modern website using React with Vite and TypeScript
+
+**Project Idea:** AI-powered task manager with smart scheduling
+
+**Pages to Include:** Home, Features, Contact
+
+**Home Page:**
+- Hero Title: "Manage Tasks Intelligently"
+- Hero Description: "AI-powered task manager that helps you prioritize and schedule tasks automatically"
+- CTA Button: "Get Started"
+
+**Design Requirements:**
+- Modern, professional UI with Wave AI branding
+- Color scheme: Dark theme (#141414 background, #009DFF accent)
+- Typography: Orbitron for headings, Inter for body
+- Smooth animations and transitions
+- Fully responsive design
+
+**Technical Requirements:**
+- Clean, maintainable code
+- Best practices and modern patterns
+- Optimized performance
+- Accessibility standards (WCAG 2.1)
+- SEO-friendly structure`;
+
+            const config = {
+                techStack: 'react',
+                pages: ['home', 'features', 'contact'],
+                pageContent: {
+                    home: {
+                        title: 'Manage Tasks Intelligently',
+                        body: 'AI-powered task manager that helps you prioritize',
+                        cta: 'Get Started'
+                    }
+                },
+                settings: {
+                    animations: true,
+                    responsive: true
+                },
+                timestamp: Date.now()
+            };
+
+            localStorage.setItem('waveWebGenPrompt', testPrompt);
+            localStorage.setItem('waveWebGenConfig', JSON.stringify(config));
+
+            document.getElementById('prompt-status').textContent = '✅ Test prompt stored successfully!';
+            document.getElementById('prompt-status').className = 'status success';
+            
+            checkStoredPrompt();
+        }
+
+        function checkStoredPrompt() {
+            const prompt = localStorage.getItem('waveWebGenPrompt');
+            const config = localStorage.getItem('waveWebGenConfig');
+
+            if (prompt && config) {
+                const configObj = JSON.parse(config);
+                const age = Date.now() - configObj.timestamp;
+                const ageMinutes = Math.floor(age / 60000);
+
+                document.getElementById('prompt-status').textContent = `✅ Prompt found! Age: ${ageMinutes} minutes`;
+                document.getElementById('prompt-status').className = 'status success';
+                document.getElementById('prompt-content').textContent = `Prompt:\n${prompt.substring(0, 200)}...\n\nConfig:\n${JSON.stringify(configObj, null, 2)}`;
+            } else {
+                document.getElementById('prompt-status').textContent = '❌ No prompt stored';
+                document.getElementById('prompt-status').className = 'status error';
+                document.getElementById('prompt-content').textContent = '';
+            }
+        }
+
+        function clearPrompt() {
+            localStorage.removeItem('waveWebGenPrompt');
+            localStorage.removeItem('waveWebGenConfig');
+            document.getElementById('prompt-status').textContent = '🗑️ Prompt cleared';
+            document.getElementById('prompt-status').className = 'status info';
+            document.getElementById('prompt-content').textContent = '';
+        }
+
+        function openWebGen() {
+            const currentPort = window.location.port || '80';
+            const portNum = parseInt(currentPort);
+            
+            const possibleUrls = [
+                `http://localhost:${portNum + 2}`,
+                `http://localhost:${portNum + 1}`,
+                'http://localhost:5176',
+                'http://localhost:5175',
+                'http://localhost:5173',
+            ];
+            
+            const uniqueUrls = [...new Set(possibleUrls)];
+            const webGenUrl = uniqueUrls[0];
+            
+            console.log('Opening WebGen at:', webGenUrl);
+            console.log('Alternative URLs:', uniqueUrls.slice(1));
+            
+            const webGenWindow = window.open(webGenUrl, '_blank', 'noopener,noreferrer');
+            
+            if (webGenWindow) {
+                document.getElementById('webgen-status').innerHTML = `✅ Opened WebGen at: <strong>${webGenUrl}</strong><br>Check the new tab!`;
+                document.getElementById('webgen-status').className = 'status success';
+            } else {
+                document.getElementById('webgen-status').innerHTML = `❌ Failed to open WebGen<br>Please allow popups and try again<br>URL: ${webGenUrl}`;
+                document.getElementById('webgen-status').className = 'status error';
+            }
+        }
+
+        function openWebGenManual(port) {
+            const url = `http://localhost:${port}`;
+            const webGenWindow = window.open(url, '_blank', 'noopener,noreferrer');
+            
+            if (webGenWindow) {
+                document.getElementById('webgen-status').innerHTML = `✅ Opened WebGen at: <strong>${url}</strong>`;
+                document.getElementById('webgen-status').className = 'status success';
+            } else {
+                document.getElementById('webgen-status').innerHTML = `❌ Failed to open ${url}<br>Please allow popups`;
+                document.getElementById('webgen-status').className = 'status error';
+            }
+        }
+
+        function fullTest() {
+            const statusDiv = document.getElementById('full-test-status');
+            statusDiv.innerHTML = '🔄 Running full integration test...<br><br>';
+            statusDiv.className = 'status info';
+
+            let results = [];
+
+            // Step 1: Check ports
+            const currentPort = window.location.port || '80';
+            results.push(`✅ Step 1: Port detection - Current: ${currentPort}`);
+
+            // Step 2: Store prompt
+            storeTestPrompt();
+            results.push('✅ Step 2: Stored test prompt');
+
+            // Step 3: Verify storage
+            setTimeout(() => {
+                const prompt = localStorage.getItem('waveWebGenPrompt');
+                if (prompt) {
+                    results.push('✅ Step 3: Verified prompt in localStorage');
+                } else {
+                    results.push('❌ Step 3: Prompt not found in localStorage');
+                }
+
+                // Step 4: Calculate WebGen URL
+                const portNum = parseInt(currentPort);
+                const webGenUrl = `http://localhost:${portNum + 2}`;
+                results.push(`✅ Step 4: Calculated WebGen URL: ${webGenUrl}`);
+
+                // Step 5: Open WebGen
+                results.push('✅ Step 5: Opening WebGen in new tab...');
+                
+                statusDiv.innerHTML = results.join('<br>') + '<br><br>Opening WebGen now...';
+                statusDiv.className = 'status success';
+
+                setTimeout(() => {
+                    openWebGen();
+                }, 1000);
+            }, 500);
+        }
+
+        // Auto-check on load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkPorts();
+            checkStoredPrompt();
+        });
+    </script>
+</body>
+</html>

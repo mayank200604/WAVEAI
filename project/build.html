@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Dashboard - WAVE AI</title>
+    <link rel="icon" type="image/png" href="wave_logo.png">
+    <link rel="stylesheet" href="sidebar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 60px;
+            padding: 40px 32px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #cccccc;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .business-plan-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .selected-idea-card {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            border-left: 4px solid #009DFF;
+        }
+
+        .idea-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #009DFF;
+            margin-bottom: 12px;
+        }
+
+        .idea-text {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        .business-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .business-section {
+            background-color: #1E1E1E;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+        }
+
+        .business-section:hover {
+            border-color: #009DFF;
+            box-shadow: 0 0 20px rgba(0, 157, 255, 0.1);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #009DFF;
+            margin-bottom: 24px;
+        }
+
+        .section-content {
+            color: #cccccc;
+        }
+
+        .essential-item {
+            margin-bottom: 24px;
+        }
+
+        .essential-item h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .essential-item p {
+            line-height: 1.6;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .analysis-item {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .analysis-item h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #009DFF;
+            margin-bottom: 8px;
+        }
+
+        .analysis-item p {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+
+        .resource-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .resource-item h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .resource-item ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .resource-item li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .resource-item li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #009DFF;
+            font-weight: bold;
+        }
+
+        .cost-breakdown {
+            background-color: #2a2a2a;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .cost-category h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .cost-items {
+            margin-bottom: 16px;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .cost-item:last-child {
+            border-bottom: none;
+        }
+
+        .cost-total {
+            font-weight: 600;
+            color: #009DFF;
+            font-size: 1.1rem;
+            text-align: right;
+            padding-top: 12px;
+            border-top: 2px solid #009DFF;
+        }
+
+        .roadmap-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #009DFF, #0891b2);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -37px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            background-color: #009DFF;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 157, 255, 0.5);
+        }
+
+        .timeline-content h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            line-height: 1.6;
+        }
+
+        .build-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            background-color: #3a3a3a;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background-color: #4a4a4a;
+            transform: translateY(-2px);
+            border-color: #009DFF;
+            box-shadow: 0 0 15px rgba(0, 157, 255, 0.4);
+        }
+
+        .action-btn:disabled {
+            background-color: #2a2a2a;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .save-btn:hover:not(:disabled) {
+            background-color: #22c55e;
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .export-btn:hover:not(:disabled) {
+            background-color: #f59e0b;
+            border-color: #f59e0b;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .build-site-btn:hover {
+            background-color: #8b5cf6;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .business-section {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* Code Generation Styles */
+        .code-generation-section {
+            margin-top: 20px;
+        }
+
+        .code-preview {
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #2a2a2a;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .code-header h4 {
+            color: white;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .code-content {
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        .code-placeholder {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
+        .placeholder-icon {
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .placeholder-icon svg {
+            color: #009DFF;
+        }
+
+        .code-placeholder h4 {
+            color: white;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .code-placeholder p {
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .website-features h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            border-color: #009DFF;
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-item h5 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-item p {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Code Display Styles */
+        .generated-code {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #e6edf3;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-tabs {
+            display: flex;
+            background: #21262d;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .code-tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .code-tab.active {
+            color: white;
+            background: #0d1117;
+            border-bottom: 2px solid #009DFF;
+        }
+
+        .code-tab:hover {
+            color: white;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: #009DFF;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 157, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: #0891b2;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 157, 255, 0.4);
+        }
+
+        .mobile-menu-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block !important;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 80px 16px 20px 16px;
+            }
+
+            .main-title {
+                font-size: 2.2rem;
+            }
+
+            .business-section {
+                padding: 24px;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resource-list {
+                grid-template-columns: 1fr;
+            }
+
+            .build-actions {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .action-btn {
+                width: 200px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button id="mobile-menu-toggle" class="mobile-menu-toggle" style="display: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+
+    <div class="container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Section -->
+            <div class="header-section">
+                <h1 class="main-title">Build Idea</h1>
+                <p class="subtitle">Full business deployment plan for your validated idea</p>
+                <div style="margin-top:12px">
+                  <button class="action-btn" onclick="if(history.length>1){history.back()}else{location.href='main.html'}">Go back</button>
+                </div>
+            </div>
+
+            <!-- Business Plan Content -->
+            <div class="business-plan-content">
+                <!-- Selected Idea Card -->
+                <div id="selected-idea-card" class="selected-idea-card" style="display: none;">
+                    <h4 class="idea-title">Selected Idea</h4>
+                    <p id="selected-idea-text" class="idea-text"></p>
+                </div>
+
+                <!-- Business Plan Sections -->
+                <div class="business-sections">
+                    <!-- Business Essentials -->
+                    <div class="business-section">
+                        <h3 class="section-title">Business Essentials</h3>
+                        <div class="section-content">
+                            <div class="essential-item">
+                                <h4>Value Proposition</h4>
+                                <p>Core value and unique selling points that differentiate your idea in the market.</p>
+                            </div>
+                            <div class="essential-item">
+                                <h4>Target Market</h4>
+                                <p>Primary and secondary customer segments with detailed demographics and psychographics.</p>
+                            </div>
+                            <div class="essential-item">
+                                <h4>Revenue Model</h4>
+                                <p>Monetization strategy including pricing tiers, subscription models, and revenue streams.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market Fit Analysis -->
+                    <div class="business-section">
+                        <h3 class="section-title">Market Fit Analysis</h3>
+                        <div class="section-content">
+                            <div class="analysis-grid">
+                                <div class="analysis-item">
+                                    <h4>Market Size</h4>
+                                    <div class="metric-value">$2.5B</div>
+                                    <p>Total Addressable Market</p>
+                                </div>
+                                <div class="analysis-item">
+                                    <h4>Competition</h4>
+                                    <div class="metric-value">Medium</div>
+                                    <p>Competitive Landscape</p>
+                                </div>
+                                <div class="analysis-item">
+                                    <h4>Growth Rate</h4>
+                                    <div class="metric-value">15%</div>
+                                    <p>Annual Market Growth</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resource Requirements -->
+                    <div class="business-section">
+                        <h3 class="section-title">Resource Requirements</h3>
+                        <div class="section-content">
+                            <div class="resource-list">
+                                <div class="resource-item">
+                                    <h4>Team</h4>
+                                    <ul>
+                                        <li>2-3 Developers (Full-stack)</li>
+                                        <li>1 Designer (UI/UX)</li>
+                                        <li>1 Product Manager</li>
+                                        <li>1 Marketing Specialist</li>
+                                    </ul>
+                                </div>
+                                <div class="resource-item">
+                                    <h4>Technology</h4>
+                                    <ul>
+                                        <li>Cloud Infrastructure (AWS/Azure)</li>
+                                        <li>Development Tools & Licenses</li>
+                                        <li>Third-party APIs & Services</li>
+                                        <li>Security & Monitoring Tools</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cost Estimates -->
+                    <div class="business-section">
+                        <h3 class="section-title">Cost Estimates</h3>
+                        <div class="section-content">
+                            <div class="cost-breakdown">
+                                <div class="cost-category">
+                                    <h4>Development Phase (6 months)</h4>
+                                    <div class="cost-items">
+                                        <div class="cost-item">
+                                            <span>Team Salaries</span>
+                                            <span>$180,000</span>
+                                        </div>
+                                        <div class="cost-item">
+                                            <span>Infrastructure</span>
+                                            <span>$12,000</span>
+                                        </div>
+                                        <div class="cost-item">
+                                            <span>Tools & Licenses</span>
+                                            <span>$8,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="cost-total">Total: $200,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deployment Roadmap -->
+                    <div class="business-section">
+                        <h3 class="section-title">Deployment Roadmap</h3>
+                        <div class="section-content">
+                            <div class="roadmap-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h4>Phase 1: MVP Development (Months 1-3)</h4>
+                                        <p>Core features, basic UI, initial testing</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h4>Phase 2: Beta Launch (Months 4-5)</h4>
+                                        <p>User testing, feedback integration, refinements</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h4>Phase 3: Public Launch (Month 6)</h4>
+                                        <p>Marketing campaign, full feature set, scaling</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="build-actions">
+                    <button class="action-btn export-btn" id="export-pdf-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                        Export to PDF
+                    </button>
+                    <button class="action-btn save-btn" id="save-project-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17,21 17,13 7,13 7,21"></polyline>
+                            <polyline points="7,3 7,8 15,8"></polyline>
+                        </svg>
+                        Save Project
+                    </button>
+                    <button class="action-btn build-site-btn" onclick="window.open('http://localhost:3000', '_blank')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"></path>
+                            <path d="m19 9-5 5-4-4-3 3"></path>
+                        </svg>
+                        Want to Build a Site
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+    <script>
+        // Load sidebar component
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('sidebar.html');
+                const sidebarHTML = await response.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHTML;
+            } catch (error) {
+                console.error('Failed to load sidebar:', error);
+            }
+
+            // Initialize build page
+            initBuildPage();
+        });
+
+        function initBuildPage() {
+            loadSelectedIdea();
+            setupEventListeners();
+        }
+
+        function loadSelectedIdea() {
+            // Load mutated idea from localStorage
+            const mutatedIdea = localStorage.getItem('mutatedIdea') || localStorage.getItem('ideaText');
+            const ideaCard = document.getElementById('selected-idea-card');
+            const ideaText = document.getElementById('selected-idea-text');
+            
+            if (mutatedIdea && ideaCard && ideaText) {
+                ideaText.textContent = mutatedIdea;
+                ideaCard.style.display = 'block';
+            }
+        }
+
+        function setupEventListeners() {
+            const exportPdfBtn = document.getElementById('export-pdf-btn');
+            const saveProjectBtn = document.getElementById('save-project-btn');
+
+            if (exportPdfBtn) {
+                exportPdfBtn.addEventListener('click', exportToPDF);
+            }
+
+            if (saveProjectBtn) {
+                saveProjectBtn.addEventListener('click', saveProject);
+            }
+        }
+
+        async function exportToPDF() {
+            const exportBtn = document.getElementById('export-pdf-btn');
+            if (exportBtn) {
+                const originalText = exportBtn.innerHTML;
+                exportBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                    Generating PDF...
+                `;
+                exportBtn.disabled = true;
+
+                try {
+                    // Get the idea from localStorage or form data
+                    const idea = localStorage.getItem('buildIdea') || 
+                                localStorage.getItem('mutatedIdea') || 
+                                localStorage.getItem('ideaText') || 
+                                'Your AI-powered business idea';
+                    
+                    // Call the backend to generate professional PDF content using Gemini
+                    const response = await fetch('http://localhost:5000/api/generate-pdf-content', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ idea: idea })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Create and download the professional PDF content
+                        const element = document.createElement('a');
+                        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data.content));
+                        element.setAttribute('download', `business-plan-${Date.now()}.md`);
+                        element.style.display = 'none';
+                        document.body.appendChild(element);
+                        element.click();
+                        document.body.removeChild(element);
+                        
+                        showSuccessMessage('Professional business plan generated and downloaded successfully!');
+                    } else {
+                        throw new Error(data.error || 'Failed to generate PDF content');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                    showErrorMessage('Failed to generate PDF content. Please try again.');
+                } finally {
+                    // Reset button
+                    exportBtn.innerHTML = originalText;
+                    exportBtn.disabled = false;
+                }
+            }
+        }
+
+        function saveProject() {
+            const saveBtn = document.getElementById('save-project-btn');
+            if (saveBtn) {
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                    Saving...
+                `;
+                saveBtn.disabled = true;
+
+                // Mock API call to Denodo backend
+                const projectData = {
+                    title: 'AI-Enhanced Business Plan',
+                    description: localStorage.getItem('mutatedIdea') || localStorage.getItem('ideaText') || 'Generated business plan from Build Dashboard',
+                    type: 'Business Plan',
+                    sections: {
+                        essentials: 'Business essentials completed',
+                        market: 'Market analysis completed',
+                        resources: 'Resource requirements defined',
+                        costs: 'Cost estimates calculated',
+                        roadmap: 'Deployment roadmap created'
+                    }
+                };
+
+                mockApiCall('/api/projects', 'POST', projectData)
+                    .then(() => {
+                        // Reset button
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        
+                        showSuccessMessage('Project saved successfully!');
+                        
+                        // Redirect to projects page after short delay
+                        setTimeout(() => {
+                            window.location.href = 'projects.html';
+                        }, 1500);
+                    })
+                    .catch(error => {
+                        console.error('Failed to save project:', error);
+                        saveBtn.innerHTML = originalText;
+                        saveBtn.disabled = false;
+                        alert('Failed to save project. Please try again.');
+                    });
+            }
+        }
+
+        function mockApiCall(endpoint, method, data) {
+            // Simulate API call with delay
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    console.log(`Mock API call: ${method} ${endpoint}`, data);
+                    
+                    // Simulate success (95% of the time)
+                    if (Math.random() > 0.05) {
+                        resolve({ success: true, data });
+                    } else {
+                        reject(new Error('Network error'));
+                    }
+                }, 1000 + Math.random() * 1000);
+            });
+        }
+
+        function showSuccessMessage(message) {
+            // Create temporary success notification
+            const notification = document.createElement('div');
+            notification.className = 'success-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #22c55e;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 1002;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+            `;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Mobile Menu Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('mobile-open');
+                    if (overlay) {
+                        overlay.classList.toggle('active');
+                    }
+                });
+
+                // Close sidebar when clicking overlay
+                if (overlay) {
+                    overlay.addEventListener('click', function() {
+                        sidebar.classList.remove('mobile-open');
+                        overlay.classList.remove('active');
+                    });
+                }
+
+                // Close sidebar on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) {
+                        sidebar.classList.remove('mobile-open');
+                        if (overlay) {
+                            overlay.classList.remove('active');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

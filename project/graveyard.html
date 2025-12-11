@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graveyard - WAVE AI</title>
+    <link rel="icon" type="image/png" href="/wave_logo.png" />
+    <link rel="stylesheet" href="sidebar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 60px;
+            padding: 40px 32px;
+            transition: margin-left 0.3s ease;
+            max-width: 1400px;
+            margin-right: auto;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-underline {
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, #009DFF, #06b6d4);
+            margin: 0 auto 16px;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0, 157, 255, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #cccccc;
+            font-weight: 400;
+        }
+
+        .graveyard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .graveyard-card {
+            background-color: #1E1E1E;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graveyard-card:hover {
+            border-color: #009DFF;
+            box-shadow: 0 0 20px rgba(0, 157, 255, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .graveyard-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .graveyard-description {
+            color: #cccccc;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .graveyard-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .graveyard-date {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .graveyard-type {
+            padding: 4px 8px;
+            background-color: #6b7280;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .graveyard-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .resurrect-btn {
+            padding: 8px 16px;
+            background-color: #3a3a3a;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .resurrect-btn:hover {
+            background-color: #22c55e;
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+
+        .empty-description {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .graveyard-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .graveyard-card:nth-child(1) { animation-delay: 0.1s; }
+        .graveyard-card:nth-child(2) { animation-delay: 0.2s; }
+        .graveyard-card:nth-child(3) { animation-delay: 0.3s; }
+        .graveyard-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px 16px;
+            }
+
+            .main-title {
+                font-size: 2.2rem;
+            }
+
+            .graveyard-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .graveyard-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Section -->
+            <div class="header-section">
+                <h1 class="main-title">GRAVEYARD</h1>
+                <div class="title-underline"></div>
+                <p class="subtitle">Stored ideas and archived projects</p>
+                <div style="margin-top:12px">
+                  <button onclick="if(history.length>1){history.back()}else{location.href='/main'}" class="resurrect-btn">Go back</button>
+                </div>
+            </div>
+
+            <!-- Graveyard Grid -->
+            <div class="graveyard-grid" id="graveyard-grid">
+                <!-- Stored items will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+    <script>
+        // Load sidebar component
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('sidebar.html');
+                const sidebarHTML = await response.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHTML;
+            } catch (error) {
+                console.error('Failed to load sidebar:', error);
+            }
+
+            // Initialize graveyard page
+            initGraveyardPage();
+        });
+
+        let graveyardItems = [];
+
+        function initGraveyardPage() {
+            loadGraveyardItems();
+            renderGraveyard();
+        }
+
+        function loadGraveyardItems() {
+            // Load graveyard items from localStorage
+            const storedItems = localStorage.getItem('graveyard');
+            if (storedItems) {
+                graveyardItems = JSON.parse(storedItems);
+            } else {
+                // Initialize empty graveyard
+                graveyardItems = [];
+                saveGraveyardItems();
+            }
+        }
+
+        function saveGraveyardItems() {
+            localStorage.setItem('graveyard', JSON.stringify(graveyardItems));
+        }
+
+        function renderGraveyard() {
+            const graveyardGrid = document.getElementById('graveyard-grid');
+            if (!graveyardGrid) return;
+
+            if (graveyardItems.length === 0) {
+                graveyardGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M3 3v18h18"></path>
+                                <path d="m19 9-5 5-4-4-3 3"></path>
+                            </svg>
+                        </div>
+                        <h3 class="empty-title">No Stored Ideas</h3>
+                        <p class="empty-description">Ideas stored from projects will appear here</p>
+                    </div>
+                `;
+            } else {
+                graveyardGrid.innerHTML = graveyardItems.map(item => `
+                    <div class="graveyard-card" data-id="${item.id}">
+                        <div class="graveyard-meta">
+                            <span class="graveyard-date">${formatDate(item.date)}</span>
+                            <span class="graveyard-type">${item.type || 'Idea'}</span>
+                        </div>
+                        <h3 class="graveyard-title">${item.title}</h3>
+                        <p class="graveyard-description">${item.description}</p>
+                        <div class="graveyard-actions">
+                            <a href="resurrect.html" class="resurrect-btn" onclick="resurrectItem('${item.id}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                                    <path d="M21 3v5h-5"></path>
+                                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                                    <path d="M8 16H3v5"></path>
+                                </svg>
+                                Resurrect
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+        }
+
+        function addToGraveyard(item) {
+            const graveyardItem = {
+                id: Date.now().toString(),
+                title: item.title || 'Untitled Idea',
+                description: item.description || item.idea || 'No description available',
+                date: new Date().toISOString().split('T')[0],
+                type: item.type || 'Idea',
+                originalIdea: item.idea || item.description
+            };
+
+            graveyardItems.unshift(graveyardItem); // Add to beginning
+            saveGraveyardItems();
+            renderGraveyard();
+            
+            // Show success message
+            showSuccessMessage('Idea stored in graveyard!');
+        }
+
+        function resurrectItem(itemId) {
+            const item = graveyardItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            // Store the resurrected idea in localStorage
+            localStorage.setItem('ideaText', item.originalIdea || item.description);
+            
+            // Navigate to resurrect page (handled by the link)
+            return true;
+        }
+
+        function showSuccessMessage(message) {
+            // Create temporary success notification
+            const notification = document.createElement('div');
+            notification.className = 'success-notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #22c55e;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 1002;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+            `;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Global function for external access
+        window.addToGraveyard = addToGraveyard;
+    </script>
+</body>
+</html>
