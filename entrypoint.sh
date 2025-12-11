@@ -1,18 +1,22 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+set -e
 
-# Ensure we're in project root
-cd /opt/render/project/src || exit 1
+echo "Starting entrypoint..."
 
-# Internal port for the real app (loopback only)
-INTERNAL_PORT=10000
+# Render gives your app a PORT. Use that for internal gunicorn binding.
+export INTERNAL_PORT=$PORT
 
-# Start real gunicorn app bound to loopback so it does not expose public port
-# Adjust workers/timeout if you want
-gunicorn backend.app:app --bind 127.0.0.1:${INTERNAL_PORT} --chdir /opt/render/project/src --workers 2 --timeout 120 --access-logfile - --error-logfile - &
+# IMPORTANT: Add backend folder & project root to PYTHONPATH
+export PYTHONPATH="/opt/render/project/src:/opt/render/project/src/backend:$PYTHONPATH"
 
-# Small delay to let the process spawn (not strictly required)
-sleep 0.5
+echo "PYTHONPATH set to: $PYTHONPATH"
 
-# Start the proxy that binds the public PORT and forwards to the internal app
+# Start Gunicorn (backend.app is correct)
+echo "Starting backend using Gunicorn..."
+gunicorn backend.app:app \
+    --bind 127.0.0.1:${INTERNAL_PORT} \
+    --workers 1 --timeout 200 &
+
+# Start lightweight proxy so Render detects open port immediately
+echo "Starting instant proxy on PORT ${PORT}..."
 python3 proxy.py
