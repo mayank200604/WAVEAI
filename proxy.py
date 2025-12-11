@@ -6,8 +6,8 @@ import requests
 
 PORT = int(os.environ.get("PORT", "10000"))
 INTERNAL = "http://127.0.0.1:10000"
-# Use a longer read timeout so the proxy waits while model downloads / app starts
-TIMEOUT = 10  # seconds
+# Increase to 60s if your model/downloads are slow
+TIMEOUT = 60  # seconds
 
 class ProxyHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -17,23 +17,19 @@ class ProxyHandler(BaseHTTPRequestHandler):
         body = b""  # ensure body is always defined
         try:
             headers = {k: v for k, v in self.headers.items() if k.lower() != 'host'}
-            # send request to internal app (short connect timeout, longer read timeout)
-            # timeout can be a tuple (connect_timeout, read_timeout)
             if self.command in ("POST", "PUT", "PATCH"):
                 length = int(self.headers.get("content-length", 0))
                 data = self.rfile.read(length) if length > 0 else None
-                resp = requests.request(self.command, url, headers=headers, data=data, stream=True, timeout=(2, TIMEOUT))
+                resp = requests.request(self.command, url, headers=headers, data=data, stream=True, timeout=(3, TIMEOUT))
             else:
-                resp = requests.request(self.command, url, headers=headers, stream=True, timeout=(2, TIMEOUT))
+                resp = requests.request(self.command, url, headers=headers, stream=True, timeout=(3, TIMEOUT))
 
-            # forward response status & headers
             self.send_response(resp.status_code)
             excluded = ('transfer-encoding', 'content-encoding', 'connection')
             for hk, hv in resp.headers.items():
                 if hk.lower() not in excluded:
                     self.send_header(hk, hv)
 
-            # read full content (safe since responses are likely small) and forward
             try:
                 body = resp.content
             except Exception:
@@ -43,7 +39,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             self.end_headers()
             if body:
                 self.wfile.write(body)
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             # Backend not ready or timed out — return 503 informative body
             self.send_response(503)
             self.send_header("Content-Type", "text/plain; charset=utf-8")
@@ -54,8 +50,8 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 self.wfile.write(body)
             except Exception:
                 pass
-        except Exception as e:
-            # Catch-all: return 502 so client sees it's a gateway error
+        except Exception:
+            # Catch-all: return 502 so client sees a gateway error
             self.send_response(502)
             self.send_header("Content-Type", "text/plain; charset=utf-8")
             body = b"502 Bad Gateway - proxy error\n"
@@ -73,8 +69,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
     def do_DELETE(self): self._forward()
 
     def log_message(self, format, *args):
-        sys.stdout.write("%s - - [%s] %s\n" %
-                         (self.client_address[0], self.log_date_time_string(), format % args))
+        sys.stdout.write("%s - - [%s] %s\n" % (self.client_address[0], self.log_date_time_string(), format % args))
 
 if __name__ == "__main__":
     print(f"Proxy listening on 0.0.0.0:{PORT} -> {INTERNAL}", flush=True)
