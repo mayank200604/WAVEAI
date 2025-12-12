@@ -7,7 +7,7 @@ import requests
 PORT = int(os.environ.get("PORT", "10000"))
 INTERNAL = "http://127.0.0.1:10000"
 # Increase to 60s if your model/downloads are slow
-TIMEOUT = 300  # seconds
+TIMEOUT = 600  # seconds
 
 class ProxyHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
